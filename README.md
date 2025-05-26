@@ -108,16 +108,5 @@ python main.py https://www.youtube.com/watch?v=dQw4w9WgXcQ
 
 ---
 
-## Contributing
-
-1. Fork the repository.
-2. Create a feature branch: `git checkout -b feature/YourFeature`.
-3. Commit your changes: `git commit -m "Add YourFeature"`.
-4. Push to the branch: `git push origin feature/YourFeature`.
-5. Open a Pull Request.
-
-Please ensure code style consistency, include docstrings, and add tests when appropriate.
-
----
 
 **Enjoy using MARA!**
