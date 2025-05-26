@@ -23,11 +23,14 @@ result = coordinator.run("latest developments in quantum computing")
 print(result)
 
 ### Repository Structure
-├── agents.py
-├── config.py
-├── mcp_protocol.py
-├── main.py
-└── requirements.txt
+### Project Structure
+Multi-Agent Research Assistant/
+├── main.py              # Entry point and CLI interface
+├── agents.py            # All agent implementations
+├── mcp_protocol.py      # MCP communication protocol
+├── config.py            # Configuration management
+├── requirements.txt     # Python dependencies
+└── README.md           # This file
 
 ### Message Flow Example
 1. coordinator → transcript_agent: extract_transcript
