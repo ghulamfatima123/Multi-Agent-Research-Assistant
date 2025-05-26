@@ -1,91 +1,123 @@
-# Multi-Agent Research Assistant
+#  Multi-Agent Research Assistant (MARA)
 
-**SMARA** is a Python console app demonstrating agent-to-agent communication using a custom MCP (Model Context Protocol).  
-It can extract YouTube transcripts, perform web searches, and summarize content—coordinated by a central agent.
+A Python-based command-line tool demonstrating agent-to-agent communication using a custom Model Context Protocol (MCP). MARA can:
 
----
-
-### 🚀 Features
-- **Transcript Agent**: Fetches and cleans YouTube transcripts.  
-- **Search Agent**: Queries Serper.dev or falls back to DuckDuckGo scraping.  
-- **Summarizer Agent**: Uses OpenRouter API or extractive summarization.  
-- **Coordinator Agent**: Orchestrates workflows based on user input.  
-- Supports **Interactive** and **CLI** modes.
+* Extract and clean YouTube transcripts
+* Perform web searches via Serper API or DuckDuckGo scraping
+* Summarize long texts using OpenRouter API or an extractive fallback
+* Orchestrate a multi-step workflow through distinct agents
 
 ---
 
-### 🔁 Example Workflows
+## Features
 
-**YouTube Video Analysis**
-```python
-from agents import CoordinatorAgent
+* **Transcript Extraction**: Fetches transcripts from YouTube URLs and cleans them of timestamps and extraneous whitespace.
+* **Web Search**: Queries Serper API (if API key provided) or falls back to DuckDuckGo scraping.
+* **Text Summarization**: Leverages OpenRouter free models for abstractive summaries or uses an extractive algorithm.
+* **Agent Architecture**: Modular agents (`TranscriptAgent`, `SearchAgent`, `SummarizerAgent`) coordinated by `CoordinatorAgent` using the MCP protocol.
 
-coordinator = CoordinatorAgent()
-result = coordinator.run("https://youtube.com/watch?v=dQw4w9WgXcQ")
-print(result)
-Web Research
+---
 
-python
-Copy
-Edit
-from agents import CoordinatorAgent
+## Requirements
 
-coordinator = CoordinatorAgent()
-result = coordinator.run("latest developments in quantum computing")
-print(result)
-🗂️ Project Structure
-bash
-Copy
-Edit
-Multi-Agent Research Assistant/
-├── main.py              # Entry point and CLI interface
-├── agents.py            # All agent implementations
-├── mcp_protocol.py      # MCP communication protocol
-├── config.py            # Configuration management
-├── requirements.txt     # Python dependencies
-└── README.md            # This file
-🔄 Message Flow Example
-yaml
-Copy
-Edit
-1. coordinator → transcript_agent: extract_transcript
-2. transcript_agent → coordinator: success
-3. coordinator → summarizer_agent: summarize_text
-4. summarizer_agent → coordinator: success
-📡 Agent Communication Protocol
-Implements a custom MCP (Model Context Protocol) for structured communication:
+* Python 3.8+
+* See `requirements.txt` for exact versions:
 
-python
-Copy
-Edit
-@dataclass
-class MCPMessage:
-    id: str
-    method: str
-    params: Dict[str, Any]
-    timestamp: float
-    agent_from: str
-    agent_to: str
-🧩 Adding New Agents
-To add a new agent:
+  ```text
+  youtube-transcript-api==0.6.1
+  requests==2.31.0
+  python-dotenv==1.0.0
+  beautifulsoup4==4.12.2
+  ```
 
-Inherit from the MCPAgent base class.
+Install dependencies with:
 
-Implement handle_request() and run() methods.
+```bash
+pip install -r requirements.txt
+```
 
-Register the agent with the coordinator.
+---
 
-python
-Copy
-Edit
-class CustomAgent(MCPAgent):
-    def __init__(self):
-        super().__init__("custom_agent")
-    
-    def handle_request(self, method: str, params: dict) -> dict:
-        # Handle incoming MCP messages
-        pass
-    
-    def run(self, input_data: Any) -> str:
-        # Main processing logic
-        pass
+## Configuration
+
+SMARA reads optional API keys and settings from a `.env` file in the project root:
+
+```ini
+# .env
+SERPER_API_KEY=your_serper_api_key
+OPENROUTER_API_KEY=your_openrouter_api_key
+MAX_SEARCH_RESULTS=5
+SUMMARY_MAX_LENGTH=300
+```
+
+* **SERPER\_API\_KEY** (optional): For Serper.dev search API.
+* **OPENROUTER\_API\_KEY** (optional): For OpenRouter summarization.
+* **MAX\_SEARCH\_RESULTS**: Limits number of search results (default: 5).
+* **SUMMARY\_MAX\_LENGTH**: Maximum token length for summaries (default: 300).
+
+---
+
+## Usage
+
+1. **Interactive Mode**
+
+   ```bash
+   python main.py
+   ```
+
+   * Paste a YouTube URL or query to search.
+   * Type `quit` or `exit` to stop.
+
+2. **Single Query Mode**
+
+   ```bash
+   python main.py "<your query or YouTube URL>"
+   ```
+
+Example:
+
+```bash
+python main.py https://www.youtube.com/watch?v=dQw4w9WgXcQ
+```
+
+---
+
+## Project Structure
+
+```
+├── config.py           # Loads environment variables and constants
+├── mcp_protocol.py     # Defines MCPMessage & abstract MCPAgent
+├── agents.py           # Implements Transcript, Search, Summarizer, Coordinator
+├── main.py             # Entry point with interactive & single-query modes
+├── requirements.txt    # Python dependencies
+└── README.md           # Project documentation
+```
+
+### Core Components
+
+* **MCPProtocol** (`mcp_protocol.py`): Defines the message format (`MCPMessage`) and base agent (`MCPAgent`) for sending/receiving messages.
+
+* **Agents** (`agents.py`):
+
+  * `TranscriptAgent`: Extracts and cleans YouTube transcripts.
+  * `SearchAgent`: Performs web searches via Serper or DuckDuckGo fallback.
+  * `SummarizerAgent`: Generates summaries via OpenRouter or extractive algorithm.
+  * `CoordinatorAgent`: Routes user input through the appropriate workflow.
+
+* **Main** (`main.py`): Displays a banner, handles CLI input, and invokes `CoordinatorAgent`.
+
+---
+
+## Contributing
+
+1. Fork the repository.
+2. Create a feature branch: `git checkout -b feature/YourFeature`.
+3. Commit your changes: `git commit -m "Add YourFeature"`.
+4. Push to the branch: `git push origin feature/YourFeature`.
+5. Open a Pull Request.
+
+Please ensure code style consistency, include docstrings, and add tests when appropriate.
+
+---
+
+**Enjoy using MARA!**
