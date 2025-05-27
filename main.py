@@ -18,49 +18,49 @@ def print_banner():
 def interactive_mode():
     coordinator = CoordinatorAgent()
     
-    print("🔄 SMARA is ready! Enter your queries below.")
+    print(" SMARA is ready! Enter your queries below.")
     print("   • Paste YouTube URL to analyze video")
     print("   • Enter topic to search and summarize")
     print("   • Type 'quit' to exit\n")
     
     while True:
         try:
-            user_input = input("📝 Query: ").strip()
+            user_input = input(" Query: ").strip()
             
             if user_input.lower() in ['quit', 'exit', 'q']:
-                print("\n👋 Goodbye!")
+                print("\n Goodbye!")
                 break
                 
             if not user_input:
-                print("❌ Please enter a query or URL\n")
+                print(" Please enter a query or URL\n")
                 continue
             
-            print(f"\n🔄 Processing: {user_input}")
+            print(f"\n Processing: {user_input}")
             print("=" * 60)
             
             result = coordinator.run(user_input)
             print(result)
             print("=" * 60)
-            print("✅ Complete!\n")
+            print("Complete!\n")
             
         except KeyboardInterrupt:
-            print("\n\n👋 Interrupted by user. Goodbye!")
+            print("\n\n Interrupted by user. Goodbye!")
             break
         except Exception as e:
-            print(f"\n❌ Error: {e}\n")
+            print(f"\n Error: {e}\n")
 
 def single_query_mode(query: str):
     coordinator = CoordinatorAgent()
-    print(f"🔄 Processing: {query}")
+    print(f" Processing: {query}")
     print("=" * 60)
     
     try:
         result = coordinator.run(query)
         print(result)
         print("=" * 60)
-        print("✅ Complete!")
+        print(" Complete!")
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f" Error: {e}")
         sys.exit(1)
 
 def main():

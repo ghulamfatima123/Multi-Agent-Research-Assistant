@@ -108,7 +108,7 @@ class SearchAgent(MCPAgent):
     def _fallback_search(self, query: str) -> str:
         """Fallback search using web scraping (free but limited)"""
         try:
-            # Simple DuckDuckGo search (no API key needed)
+            # Simple DuckDuckGo search 
             search_url = f"https://html.duckduckgo.com/html/?q={query.replace(' ', '+')}"
             headers = {'User-Agent': 'Mozilla/5.0 (compatible; SMARA/1.0)'}
             
@@ -155,7 +155,7 @@ class SummarizerAgent(MCPAgent):
         
         max_length = max_length or config.SUMMARY_MAX_LENGTH
         
-        # Try OpenRouter API first (if available)
+        # Try mistral llm API first 
         if config.OPENROUTER_API_KEY:
             try:
                 return self._summarize_openrouter(text, max_length)
@@ -241,7 +241,7 @@ class CoordinatorAgent(MCPAgent):
     
     def run(self, user_input: str) -> str:
         """Orchestrate agents based on input"""
-        print(f"\n🤖 Coordinator starting workflow for: {user_input[:50]}...")
+        print(f"\n Coordinator starting workflow for: {user_input[:50]}...")
         
         if self._is_youtube_url(user_input):
             return self._handle_youtube_workflow(user_input)
@@ -253,7 +253,7 @@ class CoordinatorAgent(MCPAgent):
     
     def _handle_youtube_workflow(self, url: str) -> str:
         """Agent-to-agent workflow for YouTube analysis"""
-        print("\n📋 YouTube Analysis Workflow")
+        print("\n YouTube Analysis Workflow")
         print("=" * 40)
         
         # Step 1: Coordinator → Transcript Agent
@@ -261,10 +261,10 @@ class CoordinatorAgent(MCPAgent):
         response1 = self.transcript_agent.receive_message(message1)
         
         if not response1["success"]:
-            return f"❌ Transcript extraction failed: {response1['error']}"
+            return f" Transcript extraction failed: {response1['error']}"
         
         transcript = response1["data"]
-        print(f"✅ Transcript extracted: {len(transcript)} characters")
+        print(f" Transcript extracted: {len(transcript)} characters")
         
         # Step 2: Coordinator → Summarizer Agent
         message2 = self.send_message("summarizer_agent", "summarize_text", {
@@ -274,31 +274,31 @@ class CoordinatorAgent(MCPAgent):
         response2 = self.summarizer_agent.receive_message(message2)
         
         if not response2["success"]:
-            return f"❌ Summarization failed: {response2['error']}"
+            return f" Summarization failed: {response2['error']}"
         
         summary = response2["data"]
-        print(f"✅ Summary generated: {len(summary)} characters")
+        print(f" Summary generated: {len(summary)} characters")
         
         # Format final response
-        return f"""🎥 **YouTube Video Analysis**
+        return f""" **YouTube Video Analysis**
 
-📋 **Full Transcript** ({len(transcript)} chars)
+ **Full Transcript** ({len(transcript)} chars)
 {transcript[:500]}{'...' if len(transcript) > 500 else ''}
 
-📊 **AI Summary**
+ **AI Summary**
 {summary}
 
-🔄 **Agent Communication Log**
+ **Agent Communication Log**
 1. coordinator → transcript_agent: extract_transcript
 2. transcript_agent → coordinator: success
 3. coordinator → summarizer_agent: summarize_text  
 4. summarizer_agent → coordinator: success
 
-✅ **Workflow Complete**"""
+ **Workflow Complete**"""
     
     def _handle_search_workflow(self, query: str) -> str:
         """Agent-to-agent workflow for search and summarization"""
-        print(f"\n🔍 Search Analysis Workflow")
+        print(f"\n Search Analysis Workflow")
         print("=" * 40)
         
         # Step 1: Coordinator → Search Agent
@@ -306,10 +306,10 @@ class CoordinatorAgent(MCPAgent):
         response1 = self.search_agent.receive_message(message1)
         
         if not response1["success"]:
-            return f"❌ Search failed: {response1['error']}"
+            return f" Search failed: {response1['error']}"
         
         search_results = response1["data"]
-        print(f"✅ Search completed: {len(search_results)} characters")
+        print(f" Search completed: {len(search_results)} characters")
         
         # Step 2: Coordinator → Summarizer Agent
         message2 = self.send_message("summarizer_agent", "summarize_text", {
@@ -319,24 +319,24 @@ class CoordinatorAgent(MCPAgent):
         response2 = self.summarizer_agent.receive_message(message2)
         
         if not response2["success"]:
-            return f"❌ Summarization failed: {response2['error']}"
+            return f" Summarization failed: {response2['error']}"
         
         summary = response2["data"]
-        print(f"✅ Summary generated: {len(summary)} characters")
+        print(f" Summary generated: {len(summary)} characters")
         
         # Format final response
-        return f"""🔍 **Research Results for: "{query}"**
+        return f""" **Research Results for: "{query}"**
 
-📊 **AI Summary**
+ **AI Summary**
 {summary}
 
-📋 **Detailed Search Results**
+ **Detailed Search Results**
 {search_results[:800]}{'...' if len(search_results) > 800 else ''}
 
-🔄 **Agent Communication Log**  
+ **Agent Communication Log**  
 1. coordinator → search_agent: web_search
 2. search_agent → coordinator: success
 3. coordinator → summarizer_agent: summarize_text
 4. summarizer_agent → coordinator: success
 
-✅ **Workflow Complete**"""
+ **Workflow Complete**"""

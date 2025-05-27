@@ -35,13 +35,13 @@ class MCPAgent(ABC):
             agent_to=to_agent
         )
         self.message_log.append(message)
-        print(f"📤 {self.name} → {to_agent}: {method}")
+        print(f" {self.name} → {to_agent}: {method}")
         return message
     
     def receive_message(self, message: MCPMessage) -> Dict[str, Any]:
         """Receive and process MCP message"""
         self.message_log.append(message)
-        print(f"📥 {self.name} ← {message.agent_from}: {message.method}")
+        print(f" {self.name} ← {message.agent_from}: {message.method}")
         return self.handle_request(message.method, message.params)
     
     @abstractmethod
